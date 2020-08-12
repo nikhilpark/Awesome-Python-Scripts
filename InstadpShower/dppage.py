@@ -15,6 +15,9 @@ try:
 
     imagelink=(str(link[0])[15:])
     imagelink=imagelink[:len(imagelink)-23]
+    imagelink=imagelink.replace("&lt;", "<")
+    imagelink=imagelink.replace("&gt;", ">")
+    imagelink=imagelink.replace("&amp;", "&")
     print(imagelink)
     wb.open_new_tab(imagelink)
 
