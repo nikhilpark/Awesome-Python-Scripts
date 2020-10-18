@@ -1,24 +1,30 @@
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
 import webbrowser as wb
 
-
-username = input("Enter the instagram user-id: ")
-
+username = input("Enter the username ")
 try:
-    a = requests.get("https://www.instagram.com/"+username)
-    co = a.content
-    soup = BeautifulSoup(co,'html.parser')
-    link = soup.find_all('meta' , property="og:image")
-    print(link)
-    print(type(soup))
+    result = requests.get("https://www.instagram.com/" + username)
+    src = result.content
+    soup = BeautifulSoup(src, 'lxml')
+    imglink = soup.find_all('meta', property='og:image')
+    desc = soup.find_all('meta', property='og:description')
 
-    imagelink=(str(link[0])[15:])
-    imagelink=imagelink[:len(imagelink)-23]
-    print(imagelink)
-    wb.open_new_tab(imagelink)
+    imglink = (str(imglink[0])[15:])
+    imglink = imglink[:len(imglink) - 23]
+    imglink = imglink.replace("&lt;", "<")
+    imglink = imglink.replace("&gt;", ">")
+    imglink = imglink.replace("&amp;", "&")
 
-except :
-    print("No such username exists")
+    desc = (str(desc[0])[15:])
+    desc = desc.replace('" property="og:description"/>', '')
+    desc = desc.replace('- See Instagram photos and videos from ', '\n')
+    print(desc)
 
-
+    ip = input("Do you want to view profile picture? y/n ")
+    if ip == "y" or ip == "Y":
+        wb.open_new_tab(imglink)
+    elif ip == "n" or ip == "N":
+        wb.open_new_tab("rb.gy/7dt4n7")
+except:
+     print("Invalid username!")
